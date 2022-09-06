@@ -8,7 +8,6 @@ namespace Pathfinding
     {
         public static Path GetPath(Vector2 navigatorPosition, Vector2 targetPosition, Graph graph,Transform navigatorTransform)
         {
-
             PathNode start = graph.NearestNode(navigatorPosition);
             PathNode goal = graph.NearestNode(targetPosition);
             Stack<Edge> edgePath = AStarPathfinding(start, goal, graph);

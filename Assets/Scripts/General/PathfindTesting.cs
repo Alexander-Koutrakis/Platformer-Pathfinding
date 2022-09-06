@@ -10,33 +10,24 @@ namespace Pathfinding
         [SerializeField]private Graph graph;
         private float averagePathLength=0;
         [SerializeField]private GraphConstructor graphConstructor;
+        [SerializeField] private PathfinderMediator pathfinderMediator;
         public GameObject navigatorTransform;
         public Transform targetTransform;
 
         public void Test()
         {
             graph = graphConstructor.NewGraph();
-            PathfinderMediator pathfinderMediator = new PathfinderMediator(graph);
-            CreateNavigators();
+            pathfinderMediator.SetinstanceTest(graph);
             MultipleNavigatortest();
         }
-
-        private void CreateNavigators()
-        {          
-            for(int i = 0; i < 10; i++)
-            {
-                GameObject newNavigator = Instantiate(navigatorTransform, transform);
-                newNavigator.name = "Navigator " + i;
-            }
-        }
-
+      
         private void MultipleNavigatortest()
         {
             Navigator[] navigators = GetComponentsInChildren<Navigator>();
             foreach(Navigator navigator in navigators)
             {
                 navigator.transform.position = RandomPosition();
-                navigator.SetTarget(targetTransform);
+                navigator.SetTargetTesting(targetTransform);
             }
         }
 

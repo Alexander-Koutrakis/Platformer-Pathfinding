@@ -1,4 +1,4 @@
-﻿using System;
+﻿  using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Pathfinding
@@ -41,8 +41,10 @@ namespace Pathfinding
         }
         public MovementAction NextAction()
         {
+
             if (movementActionPath.Count > 0)
             {
+
                 return movementActionPath.Dequeue();
             }
             return null;

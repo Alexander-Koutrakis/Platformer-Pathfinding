@@ -13,8 +13,7 @@ namespace Pathfinding
         public string Path;
        
         private void CreateEdges(NodeGameobject targetNodeGameobject, NodeGameobject[] nodeGameobjects)
-        {           
-            
+        {                      
             float connectionDistance = 2;
             foreach(NodeGameobject nodeGameobject in nodeGameobjects)
             {
@@ -41,34 +40,16 @@ namespace Pathfinding
 
         public void GenerateEdges2()
         {
-            // EditorCoroutines.Execute(GenerateEdges());
             NodeGameobject[] nodeGameobjects = GetComponentsInChildren<NodeGameobject>();
             int index = 0;
             foreach (NodeGameobject nodeGameobject in nodeGameobjects)
             {
                 index++;
 
-                Debug.Log("Creating Edges " + index + " / " + nodeGameobjects.Length);
                 CreateEdges(nodeGameobject, nodeGameobjects);
 
             }
         }
-
-        private IEnumerator GenerateEdges()
-        {
-            NodeGameobject[] nodeGameobjects = GetComponentsInChildren<NodeGameobject>();
-            int index = 0;
-            foreach (NodeGameobject nodeGameobject in nodeGameobjects)
-            {
-                index++;
-
-                Debug.Log("Creating Edges " + index+" / "+ nodeGameobjects.Length);
-                CreateEdges(nodeGameobject, nodeGameobjects);
-                yield return null;
-            }
-        }
-
-
         private void GenerateGroundNodeGameObjects()
         {
             Tilemap tilemap = GameObject.FindObjectOfType<Tilemap>();
@@ -85,22 +66,6 @@ namespace Pathfinding
             DestroyImmediate(emptyGO);
         }
 
-        private void GenerateLargeNodeGameobject()
-        {
-            GameObject emptyGO = new GameObject();
-            List<NodeGameobject> nodeGameobjects = new List<NodeGameobject>();
-            for (int x = 0; x <= 150; x += 2)
-            {
-                for(int y = 0; y <= 150; y += 2)
-                {
-                    Vector2 position = new Vector2(x, y);
-                    GameObject nodeGameobjectPrefab = Instantiate(emptyGO, position, Quaternion.identity, transform);
-                    NodeGameobject nodeGameobject = nodeGameobjectPrefab.AddComponent<NodeGameobject>();
-                    nodeGameobjects.Add(nodeGameobject);
-                    nodeGameobjectPrefab.name = "PathfindNode " + nodeGameobjectPrefab.transform.position;
-                }
-            }
-        }
         private List<PathNode> GeneratePathNodes()
         {
             Dictionary<NodeGameobject, PathNode> nodeDictionary = new Dictionary<NodeGameobject, PathNode>();

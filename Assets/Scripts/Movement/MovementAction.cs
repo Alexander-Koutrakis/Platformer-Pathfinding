@@ -7,8 +7,14 @@ namespace Pathfinding
     {
         protected Transform movingTransform;
         protected Vector2 targetPosition;
-        protected const float REACH_DISTANCE = 0.2f;
+        protected const float REACH_DISTANCE = 0.3f;
+
+        public Vector2 GetTarget()
+        {
+            return targetPosition;
+        }
         public bool Completed { protected set; get; }
+        public bool Started { protected set; get; }
         public abstract void Start();
         protected abstract void Move();
         protected abstract void End();

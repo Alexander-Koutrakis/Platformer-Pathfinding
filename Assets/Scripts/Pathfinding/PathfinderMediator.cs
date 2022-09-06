@@ -1,23 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 using System.Diagnostics;
 using System;
 namespace Pathfinding
 {
-    public class PathfinderMediator
+    public class PathfinderMediator:MonoBehaviour
     {
-        private Queue<KeyValuePair<Navigator, Vector2>> pathRequests = new Queue<KeyValuePair<Navigator, Vector2>>();
-        private Graph graph;
+        [SerializeField]private Graph graph;
         public static PathfinderMediator Instance { private set; get;}
-
-        private Stopwatch sw=new Stopwatch();
-
-        public PathfinderMediator(Graph graph)
+      
+        private void Awake()
         {
-            this.graph = graph;
+            if (Instance == null){
+                Instance = this;
+                GraphConstructor graphConstructor = FindObjectOfType<GraphConstructor>();
+                graph = graphConstructor.NewGraph();
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        public void SetinstanceTest(Graph graph)
+        {
             Instance = this;
+            this.graph = graph;
         }
 
         public void PathResquest(Navigator navigator, Vector2 target)
@@ -29,14 +37,8 @@ namespace Pathfinding
 
         private void SendPath(Navigator navigator, Vector2 targetPosition,Vector2 navigatorPosition)
         {
-            Stopwatch newSW = new Stopwatch();
-            newSW.Start();
             Path path = Pathfinder.GetPath(navigatorPosition, targetPosition, graph, navigator.Transform);
             navigator.SetPath(path);
-
-            newSW.Stop();
-            TimeSpan ts = newSW.Elapsed;
-            UnityEngine.Debug.Log("Pathfind " + ts.TotalMilliseconds);
         }    
        
     }
