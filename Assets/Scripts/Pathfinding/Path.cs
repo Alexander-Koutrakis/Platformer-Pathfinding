@@ -44,7 +44,6 @@ namespace Pathfinding
 
             if (movementActionPath.Count > 0)
             {
-
                 return movementActionPath.Dequeue();
             }
             return null;
