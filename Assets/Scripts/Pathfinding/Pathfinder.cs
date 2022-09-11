@@ -46,7 +46,7 @@ namespace Pathfinding
                     if (!distanceScore.ContainsKey(destinationNodeIndex))
                         distanceScore.Add(destinationNodeIndex, int.MaxValue);
 
-                    int currentScore = distanceScore[destinationNodeIndex] + currentNode.Edges[i].Weight;
+                    int currentScore = distanceScore[currentNodeIndex] + currentNode.Edges[i].Weight;
                     if (currentScore < distanceScore[destinationNodeIndex])
                     {
                         distanceScore[destinationNodeIndex] = currentScore;
