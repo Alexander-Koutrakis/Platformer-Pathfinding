@@ -14,6 +14,12 @@ namespace Elevator {
     
         public event Action<int> ReachedFloor;
 
+
+        public ElevatorMotor()
+        {
+            currentFloor = 0;
+            currentDirection = Direction.Stationary;
+        }
         public void GoToFloor(int floor)
         {
             while(floor != currentFloor)
@@ -24,6 +30,11 @@ namespace Elevator {
 
             ReachedFloor?.Invoke(floor);
                       
+        }
+
+        public void StopElevator()
+        {
+            currentDirection = Direction.Stationary;
         }
 
         private void Move(Direction direction)
