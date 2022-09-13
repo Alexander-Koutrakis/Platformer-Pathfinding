@@ -20,6 +20,9 @@ namespace Elevator {
             currentFloor = 0;
             currentDirection = Direction.Stationary;
         }
+
+        //Move the elevator to destination floor
+        //the while loop and Move function are used to simmulate elevator movement
         public void GoToFloor(int floor)
         {
             while(floor != currentFloor)

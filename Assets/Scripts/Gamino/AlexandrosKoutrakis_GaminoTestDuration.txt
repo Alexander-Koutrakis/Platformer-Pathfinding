@@ -1,0 +1,9 @@
+
+Alexandros Koutrakis email:koutrakisa@gmail.com
+
+Test Duration 5-7hours
+    -AreDigitsUnique : 30 min
+    -SortLetters:2-3 hours(my test results were opposite to what I expected)
+    -Maze Pathfind: 2 hours (almost half of the time was implementing the tests scripts)
+    -Elevator: 1 hour ( used SCAN (Elevator) Disk Scheduling Algorithm at first and then
+                        refactored to LOOK Disk Scheduling algorithm)

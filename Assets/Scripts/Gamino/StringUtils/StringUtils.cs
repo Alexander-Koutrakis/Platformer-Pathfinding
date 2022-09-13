@@ -1,6 +1,27 @@
+/* |--------------------------------------------------------|
+ * |              Pathfinding Algorith Test Results         |
+ * |--------------------------------------------------------| 
+ * |        Method      |   Speed   |   Tests   |String Size|
+ * |--------------------------------------------------------|        
+ * |      SortLetters   |  5.610ms  |  1000000  |186000chars|
+ * |    SortLetters2    |  14.065ms |  1000000  |186000chars|
+ * |--------------------------------------------------------| 
+ * |Specs                                                   |
+ * |CPU:    Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz       |
+ * |GPU:    Radeon RX 480 4gb                               |
+ * |Ram:    DD4 16gb 4200MHz                                |
+ * |--------------------------------------------------------|
+ * 
+ * Even though SortLettersHasMap is of complexity O(n), the use
+ * of Dictionary seems slower than iterating through the arrays.
+ * Thus SortLetter method O(n^2), was chosen for the solution
+ */
+
+
+
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace StringUtility{
     public class StringUtils
@@ -23,32 +44,30 @@ namespace StringUtility{
             inputAndOutput = sortedArray;
         }
 
-        public static void SortLetters2(ref byte[] inputAndOutput, byte[] sortOrder)
+
+        public static void SortLettersHashMap(ref byte[] inputAndOutput, byte[] sortOrder)
         {
             Dictionary<byte, int> byteMap = new Dictionary<byte, int>();
 
             for(int i = 0; i < sortOrder.Length; i++)
             {
-                byte b = sortOrder[i];
-                byteMap.Add(b, 0);
+                byteMap.Add(sortOrder[i], 0);
             }
 
             for (int i = 0; i < inputAndOutput.Length; i++)
             {
-                byte b = inputAndOutput[i];
-                byteMap[b]++;
+                byteMap[inputAndOutput[i]]++;
             }
 
             int index = 0;
-            foreach (byte b in byteMap.Keys)
+            for (int i = 0; i < sortOrder.Length; i++)
             {
-                for (int i = 0; i < byteMap[b]; i++)
+                for (int j = 0; j < byteMap[sortOrder[i]]; j++)
                 {
-                    inputAndOutput[index] = b;
+                    inputAndOutput[index] = sortOrder[i];
                     index++;
                 }
             }
-
         }
 
         public static void DebugTest(byte[] bytearray)

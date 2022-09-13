@@ -2,33 +2,36 @@ using System.Collections.Generic;
 using RoomPathfinding;
 using System;
 
-/* This Script is used for testing Pathfinding algorith
- * Generate a 1000 room maze
+/* This Script is used for testing Pathfinding algorith in MazeTestConstructor
+ * Generate a room maze
  * each room is randomly connected
  */
 public class RandomMazeConstructor
 {
-    private int roomsLength=1000;
+    private int mazeSize;
     private List<int> allRoomsHashCodes = new List<int>();
-    private Maze maze;
+    public Maze Maze { private set; get; }
 
-    public Maze GetRandomMaze()
+    public RandomMazeConstructor(int size)
     {
-        if (maze == null)
-        {
-            CreateNewMaze();
-        }
-        return maze;
+        mazeSize = size;
+        CreateNewMaze();
     }
+
+
+   
+
+    //Create all the rooms
+    //for each room create a random number of connections
     private void CreateNewMaze()
    {
-        maze = new Maze();
-        for(int i=0;i< roomsLength; i++)
+        Maze = new Maze();
+        for(int i=0;i< mazeSize; i++)
         {
             AddRoom(i);
         }
 
-        for(int i = 0; i < roomsLength; i++)
+        for(int i = 0; i < mazeSize; i++)
         {
             int parentRoomHashCode = allRoomsHashCodes[i];
             CreateRandomConnections(parentRoomHashCode);
@@ -46,7 +49,7 @@ public class RandomMazeConstructor
     private void CreateRandomConnection(int parentRoomHashCode,int connectedRoomHashCode)
     {
         Direction randomDirection = RandomDirection();
-        maze.AddConnection(parentRoomHashCode, connectedRoomHashCode, randomDirection);
+        Maze.AddConnection(parentRoomHashCode, connectedRoomHashCode, randomDirection);
     }
     private Direction RandomDirection()
     {
@@ -60,8 +63,8 @@ public class RandomMazeConstructor
     private void AddRoom(int index)
     {
         string roomName = "Room" + index;
-        maze.AddRoom(roomName);
-        int roomHashCode = maze.RoomHashCode(roomName);
+        Maze.AddRoom(roomName);
+        int roomHashCode = Maze.RoomHashCode(roomName);
         allRoomsHashCodes.Add(roomHashCode);
     }
 }

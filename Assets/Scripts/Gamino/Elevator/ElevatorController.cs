@@ -4,13 +4,12 @@ using System.Collections.Generic;
 namespace Elevator
 {
 
-
     /*summary
-     * We used a modified Look algorith
-     * where we get all destinations on the same direction that we are already moving.
+     * We used a modified LOOK Disk Scheduling algorithm
+     * where we serve all destinations on the same direction that we are already moving.
      * 
-     * If there are no more request on hat direction we get the further up or down
-     * request of the opposite direction(The highest for downRequests and Lowest for UpRequests)
+     * If there are no more request on that direction we serve the first of the opposite direction,
+     * The highest downRequest or the lowestUpRequest.
      * 
      * Requests are represents as boolean arrays where every index represents
      * a floor and if its true there is a request
@@ -22,100 +21,75 @@ namespace Elevator
 
         private ElevatorMotor elevatorMotor;
 
-        private bool[] upRequests = new bool[10] {false, false, false, false, false, false, false, false, false, false };
-        private bool[] downRequests = new bool[10] { false, false, false, false, false, false, false, false, false, false };
+        private Dictionary<Direction, bool[]> floorRequests = new Dictionary<Direction, bool[]>();
+        private Direction pathDirection=Direction.Up;
 
-        private Direction pathDirection;
-
+        //use this array to trigger ReachDestinationFloor event
         private bool[] destinationFloors= new bool[10] {false, false, false, false, false, false, false, false, false, false };
+
+        //use this Dictionary to trigger ReachedSummonedFloor event
         private Dictionary<Direction, List<int>> summonFloors = new Dictionary<Direction, List<int>>();
 
-    public ElevatorController()
-        {
+         public ElevatorController()
+         {
             elevatorMotor = new ElevatorMotor();
             elevatorMotor.ReachedFloor += FloorReached;
-        }
+
+            bool[] upRequests = new bool[10] { false, false, false, false, false, false, false, false, false, false };
+            bool[] downRequests = new bool[10] { false, false, false, false, false, false, false, false, false, false };
+            floorRequests.Add(Direction.Up, upRequests);
+            floorRequests.Add(Direction.Down, downRequests);
+         }
 
        
         public void FloorButtonPushed(int floor)
         {
             if (elevatorMotor.CurrentFloor < floor)
             {
-                upRequests[floor] = true;
+                floorRequests[Direction.Up][floor] = true;
             }else if(elevatorMotor.CurrentFloor > floor)
             {
-                downRequests[floor] = true;
+                floorRequests[Direction.Down][floor] = true;
             }
 
+            //Add floor to destination array to trigger ReachDestinationFloor
             destinationFloors[floor] = true;
         }
 
         /*The summon requests are added to the directions they are aimed to
          * Example:
          * If we are on floor 5 going up , the new request on floor 7 for down
-         * will be adden to the downResquest and ingored by the elevator going up
+         * will be adden to the downResquest
          */
         public void SummonButtonPushed(int floor, Direction direction)
         {
-            if (direction == Direction.Up)
-            {
-                upRequests[floor] = true;
-            }
-            else
-            {
-                downRequests[floor] = true;
-            }
+            floorRequests[direction][floor] = true;
 
-            if (elevatorMotor.CurrentDirection == Direction.Stationary)
-            {
-                elevatorMotor.GoToFloor(floor);
-            }
-
+            //Add floor to SummonDictionary to trigger ReachedSummonedFloor event
             if (!summonFloors[direction].Contains(floor))
             {
                 summonFloors[direction].Add(floor);
             }
+
+
+            //Start elevator if its Direction.Stationary
+            if (elevatorMotor.CurrentDirection == Direction.Stationary)
+            {
+                elevatorMotor.GoToFloor(floor);
+            }
         }
 
+        //When reaching a floor remove the floor from floorRequests
+        //If the floor is a destination floor invoke ReachedDestinationFloor event
+        //If the floor is a summon floor invoke ReachSummonedFloor event
         public void FloorReached(int floor)
         {
-            if (pathDirection == Direction.Down)
-            {
-                if (downRequests[floor])
-                {
-                    downRequests[floor] = false;
-                }
-                //if we came to this floor while decending and it wasnt requested on downrequest
-                //It means that the requests bellow this floor are finished, this is the lowest
-                //Up request and we should start going Up
-                else
-                {
-                    upRequests[floor] = false;
-                    pathDirection = Direction.Up;
-                }
-                
-            }else if (pathDirection == Direction.Up)
-            {
-                if (upRequests[floor])
-                {
-                    upRequests[floor] = false;
-                }
-                //if we came to this floor while ascending and it wasnt requested on upRequest
-                //It means that the requests above this floor are finished, this is the highest
-                //Down request and we should start going Up
-                else
-                {
-                    upRequests[floor] = false;
-                    pathDirection = Direction.Down;
-                }
-            }
-
-            NextFloor(pathDirection);
+            floorRequests[pathDirection][floor] = false;
 
 
             if (destinationFloors[floor])
             {
-                ReachedSummonedFloor?.Invoke(floor);
+                ReachedDestinationFloor?.Invoke(floor);
                 destinationFloors[floor] = false;
             }
 
@@ -124,70 +98,94 @@ namespace Elevator
                 ReachedSummonedFloor?.Invoke(floor);
                 summonFloors[pathDirection].Remove(floor);
             }
+
+            GoToNextFloor();
         }
 
-
-
-        private void NextFloor(Direction direction)
+        //look for the next floor request in that direction
+        //if there are no more requests of that direction
+        //look for the last floor request of the opposite direction
+        //example:
+        //We are on floor 5, the last moving up floor,
+        //look for the highest downRequest an start from there
+        private void GoToNextFloor()
         {
-            if (direction == Direction.Up)
+            int nextFloor = -1;
+            if (pathDirection == Direction.Up)
             {
-                //look for the next floor request in that direction
-                for(int i = elevatorMotor.CurrentFloor; i < upRequests.Length;i++)
-                {
-                    if (upRequests[i])
-                    {
-                        elevatorMotor.GoToFloor(i);
-                        return;
-                    }
-                }
-                
-                //if there are no more requests of that direction
-                //look for the last floor request of the opposite direction
-                //Example
-                //We are on floor 5 the last moving up floor
-                //look for the highest down request an go there
-                //
-                for(int i= downRequests.Length-1; i > elevatorMotor.CurrentFloor; i--)
-                {
-                    if (downRequests[i])
-                    {
-                        elevatorMotor.GoToFloor(i);
-                        return;
-                    }
-                }
+                nextFloor = NextUp();
+                if (nextFloor < 0)
+                    nextFloor = HighestDownRequest();
             }
-            else if(direction == Direction.Down)
+            else if(pathDirection == Direction.Down)
             {
-                //look for the next floor request in that direction
-                for (int i = elevatorMotor.CurrentFloor; i > 0; i--)
-                {
-                    if (upRequests[i])
-                    {
-                        elevatorMotor.GoToFloor(i);
-                        return;
-                    }
-                }
+                nextFloor = NextDown();
+                if (nextFloor < 0)
+                    nextFloor = LowestUpRequest();
+            }
 
-                //if there are no more requests of that direction
-                //look for the last floor request of the opposite direction
-                //Example
-                //We are on floor 5 the last moving up floor
-                //look for the lowest up request an go there
-                //
-                for (int i = 0 - 1; i < elevatorMotor.CurrentFloor; i++)
-                {
-                    if (upRequests[i])
-                    {
-                        elevatorMotor.GoToFloor(i);
-                        return;
-                    }
-                }
-            }
 
             //If there are no Requests Stop Elevator
-            elevatorMotor.StopElevator();
+            if (nextFloor < 0)
+            {
+                elevatorMotor.StopElevator();
+            }
+            else
+            {
+                elevatorMotor.GoToFloor(nextFloor);
+            }
         }
 
+        private int NextUp()
+        {
+            for (int i = elevatorMotor.CurrentFloor; i < floorRequests[Direction.Up].Length; i++)
+            {
+                if (floorRequests[Direction.Up][i])
+                {                    
+                    return i;
+                }
+            }            
+            return -1;
+        }
+
+        private int LowestUpRequest()
+        {
+            for(int i=0;i< floorRequests[Direction.Up].Length; i++)
+            {
+                if (floorRequests[Direction.Up][i])
+                {
+                    pathDirection = Direction.Up;
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private int NextDown()
+        {
+            for (int i = elevatorMotor.CurrentFloor; i > 0; i--)
+            {
+                if (floorRequests[Direction.Down][i])
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private int HighestDownRequest()
+        {
+            for (int i = floorRequests[Direction.Down].Length - 1; i > 0; i--)
+            {
+                if (floorRequests[Direction.Down][i])
+                {
+                    pathDirection = Direction.Down;
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+   
     }
 }

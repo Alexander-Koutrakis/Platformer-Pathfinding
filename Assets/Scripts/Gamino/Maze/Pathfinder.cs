@@ -1,28 +1,29 @@
 
+/* |--------------------------------------------------------|
+ * |              Pathfinding Algorith Test Results         |
+ * |--------------------------------------------------------| 
+ * |    Algorithm       |   Speed   |   Tests   | Maze Size |
+ * |--------------------------------------------------------|        
+ * |Depth-First Search  |  0.0105ms |  1000000 | 1000 rooms |
+ * |Breadth-First Search|  0.0018ms |  1000000 | 1000 rooms |
+ * |        Dijkstra    |  0.0460ms |  1000000 | 1000 rooms |
+ * |--------------------------------------------------------| 
+ * |Specs                                                   |
+ * |CPU:    Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz       |
+ * |GPU:    Radeon RX 480 4gb                               |
+ * |Ram:    DD4 16gb 4200MHz                                |
+ * |--------------------------------------------------------|
+ * 
+ * Test reults proved that Breadth-First Search algorithn is
+ * faster and will be used for pathfinding
+ */
+
+
 using System.Collections.Generic;
 using Priority_Queue;
+
 namespace RoomPathfinding
 {
-    /* |--------------------------------------------------------|
-     * |              Pathfinding Algorith Test Results         |
-     * |--------------------------------------------------------| 
-     * |    Algorithm       |   Speed   |   Tests   | Maze Size |
-     * |--------------------------------------------------------|        
-     * |Depth-First Search  |  0.0105ms |  1000000 | 1000 rooms |
-     * |Breadth-First Search|  0.0018ms |  1000000 | 1000 rooms |
-     * |        Dijkstra    |  0.0460ms |  1000000 | 1000 rooms |
-     * |--------------------------------------------------------| 
-     * |Specs                                                   |
-     * |CPU:    Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz       |
-     * |GPU:    Radeon RX 480 4gb                               |
-     * |Ram:    DD4 16gb 4200MHz                                |
-     * |--------------------------------------------------------|
-     * 
-     * Test reults proved that Breadth-First Search algorithn is
-     * faster and will be used for pathfinding
-     */
-
-
 
     public static class Pathfinder
     {

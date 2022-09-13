@@ -1,4 +1,4 @@
-
+#if UNITY_EDITOR
 using UnityEngine;
 using RoomPathfinding;
 using UnityEditor;
@@ -8,25 +8,26 @@ using System;
 /* this class is used for testing the Pathfinder results
  * Steps:
  *  -Add the script on a gameobject
- *  -Create Maze
+ *  -press Create Maze
  *  -Enter the names of the Rooms you want to test
- *      *Room names are Room+number from 0-999 (example Room345)
- *  -Get reults
+ *      *Room names are Room+number( 0-999 ,example Room345)
+ *  -press Has Path to get Results
  * 
  * Show Connections shows the connections of each room and its used for Debugging
  */
 
-#if UNITY_EDITOR
+
 public class MazeTestController : MonoBehaviour
 {
     private Maze maze;
     public string StartingRoom;
     public string TargetRoom;
+    public int numberOfTests = 1;
+    public int mazeSize = 1000;
     public void CreateMaze()
     {
-        RandomMazeConstructor randomMazeConstructor = new RandomMazeConstructor();
-        maze = randomMazeConstructor.GetRandomMaze();
-        Pathfinder.SetMaze(maze);
+        RandomMazeConstructor randomMazeConstructor = new RandomMazeConstructor(mazeSize);       
+        Pathfinder.SetMaze(randomMazeConstructor.Maze);
     }
 
     public void HasPathTest()
@@ -34,7 +35,7 @@ public class MazeTestController : MonoBehaviour
         Room startRoom=maze.GetRoom(StartingRoom);
         Room targetRoom = maze.GetRoom(TargetRoom);
         bool hasPath = false;
-        int numberOfTests = 1000000;
+
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
         for (int i = 0; i < numberOfTests; i++)
@@ -43,6 +44,7 @@ public class MazeTestController : MonoBehaviour
         }
         stopwatch.Stop();
         TimeSpan timeSpan = stopwatch.Elapsed;
+
         UnityEngine.Debug.Log("Average Pathfind "+timeSpan.TotalMilliseconds/ numberOfTests);
         UnityEngine.Debug.Log("Path Exist "+hasPath+" from "+startRoom.Name+" to "+targetRoom.Name);
     }

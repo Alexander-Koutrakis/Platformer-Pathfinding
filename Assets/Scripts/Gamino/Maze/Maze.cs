@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 namespace RoomPathfinding {
 
+    //Maze of rooms is mapped by each room hashCode
+    //there is a second map based on the name of each room
+    //to help 
     public class Maze
     {
         private Dictionary<int, Room> roomMap = new Dictionary<int, Room>();
