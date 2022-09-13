@@ -19,7 +19,6 @@ namespace Pathfinding
             movement.RigidBodyIsKinematic(false);
             movement.StopMovement();
             Completed = true;
-            Debug.Log("Stop jumping");
         }
 
         protected override void Move()
