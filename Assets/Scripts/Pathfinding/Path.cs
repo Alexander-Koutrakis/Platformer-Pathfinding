@@ -6,7 +6,7 @@ namespace Pathfinding
     public class Path
     {
         private Queue<MovementAction> movementActionPath=new Queue<MovementAction>();
-        private List<Vector2> positions = new List<Vector2>();
+            private List<Vector2> positions = new List<Vector2>();
         public bool IsCompleted {
             get
             {
@@ -60,5 +60,7 @@ namespace Pathfinding
                 }
             }
         }
+
+        
     }
 }

@@ -10,7 +10,7 @@ namespace Pathfinding
         private Movement movement;
         public GroundMoveAction(Transform movingTransform, Edge edge,Graph graph) : base(movingTransform, edge,graph)
         {
-
+            
         }
 
         protected override void Move()
