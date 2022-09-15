@@ -6,7 +6,7 @@ namespace Pathfinding
     public class Path
     {
         private Queue<MovementAction> movementActionPath=new Queue<MovementAction>();
-            private List<Vector2> positions = new List<Vector2>();
+        private List<Vector2> positions = new List<Vector2>();
         public bool IsCompleted {
             get
             {
@@ -27,18 +27,21 @@ namespace Pathfinding
                 Edge edge = path.Pop();
                 if (edge.HasCurve)
                 {
-                    JumpAction jumpAction = new JumpAction(transform, edge, graph);
+                    Vector2 target = graph.PathNodes[edge.DestinationNodeHashCode].Position;
+                    JumpAction jumpAction = new JumpAction(edge, target);
                     movementActionPath.Enqueue(jumpAction);
                 }
                 else
                 {
-                    GroundMoveAction groundMoveAction = new GroundMoveAction(transform, edge,graph);
+                    Vector2 target = graph.PathNodes[edge.DestinationNodeHashCode].Position;
+                    GroundMoveAction groundMoveAction = new GroundMoveAction(edge, target);
                     movementActionPath.Enqueue(groundMoveAction);
                 }
 
                 positions.Add(graph.PathNodes[edge.DestinationNodeHashCode].Position);
             }
         }
+
         public MovementAction NextAction()
         {
 

@@ -4,7 +4,7 @@ using Priority_Queue;
 
 namespace Pathfinding
 {
-    public class Pathfinder
+    public static class Pathfinder
     {
         public static Path GetPath(Vector2 navigatorPosition, Vector2 targetPosition, Graph graph,Transform navigatorTransform)
         {

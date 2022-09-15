@@ -48,7 +48,7 @@ namespace Pathfinding
             PathfindTesting pathfindTesting = (PathfindTesting)target;
             if (GUILayout.Button("GetRandomPath"))
             {
-                pathfindTesting.Test();
+               // pathfindTesting.Test();
             }
            
         }

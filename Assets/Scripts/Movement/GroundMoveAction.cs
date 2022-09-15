@@ -1,32 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 namespace Pathfinding
 {
     public class GroundMoveAction : MovementAction
     {
 
-        private Movement movement;
-        public GroundMoveAction(Transform movingTransform, Edge edge,Graph graph) : base(movingTransform, edge,graph)
-        {
-            
-        }
-
-        protected override void Move()
+        public GroundMoveAction(Edge edge, Vector2 targetPosition) : base(edge, targetPosition) { }
+        
+        protected override void Move(Movement movement)
         {
             movement.Move();
         }
 
-        public override void Start()
+        public override void Start(Movement movement)
         {
-            movement = movingTransform.GetComponent<Movement>(); 
             movement.FaceTarget(targetPosition);
             Completed = false;
-            Started = true;
+            started = true;
         }
 
-        protected override void End()
+        protected override void End(Movement movement)
         {
             Completed = true;
         }

@@ -7,21 +7,21 @@ namespace Pathfinding
         private float waitToJumpTimer = 0.2f;
         private BezierCurve bezierCurve;
         private float timer = 0;
-        private Movement movement;
 
-        public JumpAction(Transform movingTransform, Edge edge,Graph graph) : base(movingTransform, edge, graph)
+
+        public JumpAction( Edge edge,Vector2 targetPosition) : base( edge, targetPosition)
         {
             bezierCurve = edge.BezierCurve;
         }
 
-        protected override void End()
+        protected override void End(Movement movement)
         {            
             movement.RigidBodyIsKinematic(false);
             movement.StopMovement();
             Completed = true;
         }
 
-        protected override void Move()
+        protected override void Move(Movement movement)
         {
             if (waitToJumpTimer <= 0)
             {
@@ -35,14 +35,13 @@ namespace Pathfinding
             }
         }
 
-        public override void Start()
+        public override void Start(Movement movement)
         {
-            movement = movingTransform.GetComponent<Movement>();
             movement.FaceTarget(targetPosition);
             movement.StopMovement();
             movement.RigidBodyIsKinematic(true);
             Completed = false;
-            Started = true;
+            started = true;
         }
     }
 }

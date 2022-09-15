@@ -3,18 +3,16 @@ namespace Pathfinding
 {
     public abstract class MovementAction
     {
-        protected Transform movingTransform;
-        protected Vector2 targetPosition;
+        protected readonly Vector2 targetPosition;
         protected const float REACH_DISTANCE = 0.3f;
-
         public bool Completed { protected set; get; }
-        public bool Started { protected set; get; }
-        public abstract void Start();
-        protected abstract void Move();
-        protected abstract void End();
-        private bool TargetReached()
+        protected bool started;
+        public abstract void Start(Movement movement);
+        protected abstract void Move(Movement movement);
+        protected abstract void End(Movement movement);
+        private bool TargetReached(Vector2 position)
         {
-            if (Vector2.Distance(movingTransform.position, targetPosition) < REACH_DISTANCE)
+            if (Vector2.Distance(position, targetPosition) < REACH_DISTANCE)
             {
                 return true;
             }
@@ -22,23 +20,26 @@ namespace Pathfinding
             return false;
         }
 
-        public MovementAction(Transform movingTransform, Edge edge,Graph graph)
+        public MovementAction(Edge edge,Vector2 targetPosition)
         {
-
-            this.movingTransform = movingTransform;
-            this.targetPosition = graph.PathNodes[edge.DestinationNodeHashCode].Position;
+            this.targetPosition = targetPosition;
         }
-
        
-        public void Update()
+        public void Update(Movement movement)
         {
-            if (!TargetReached())
+            if (!started)
             {
-                Move();
+                Start(movement);
+            }
+
+
+            if (!TargetReached(movement.transform.position))
+            {
+                Move(movement);
             }
             else
             {
-                End();
+                End(movement);
             }
         }
          

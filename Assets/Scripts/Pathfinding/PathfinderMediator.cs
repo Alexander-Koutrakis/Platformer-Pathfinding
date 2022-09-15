@@ -13,8 +13,8 @@ namespace Pathfinding
         {
             if (Instance == null){
                 Instance = this;
-                GraphConstructor graphConstructor = FindObjectOfType<GraphConstructor>();
-                graph = graphConstructor.NewGraph();
+                //GraphConstructor graphConstructor = FindObjectOfType<GraphConstructor>();
+                //graph = graphConstructor.NewGraph();
             }
             else
             {

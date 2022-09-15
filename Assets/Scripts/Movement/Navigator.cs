@@ -6,17 +6,22 @@ namespace Pathfinding
     public class Navigator:MonoBehaviour
     {
         private const float ASK_PATH_INTERVAL = 1f;
-        private float askPathTimeRemaining=0;
+        private float askPathTimeRemaining=1;
         private Path path;
         private bool readyToRequest;
-        [SerializeField]private MovementAction currentAction=null;
+        private Movement movement;
+        private MovementAction currentAction=null;
         public Transform Transform { private set; get; }
         public Transform TargetTransform { private set; get;}
 
-        private void Start()
+        private void Awake()
         {
-            TargetTransform = GameObject.FindGameObjectWithTag("Target").transform;
+            movement = GetComponent<Movement>();
             Transform = transform;
+            TargetTransform = GameObject.FindGameObjectWithTag("Target").transform;
+        }
+        private void Start()
+        {   
             PathRequest();  
         }
 
@@ -25,16 +30,6 @@ namespace Pathfinding
             PathfinderMediator.Instance.PathResquest(this, TargetTransform.position);
         }
 
-        #if UNITY_EDITOR 
-        public void SetTargetTesting(Transform target)
-        {
-            Transform = transform;
-            TargetTransform = target;
-            PathRequest();
-        }
-        #endif
-
-
         public void SetPath(Path path)
         {
             
@@ -42,7 +37,6 @@ namespace Pathfinding
             this.path.DebugPath();
 
             currentAction = this.path.NextAction();
-            askPathTimeRemaining = ASK_PATH_INTERVAL;
             readyToRequest = false;
         }
         public void Update()
@@ -52,40 +46,48 @@ namespace Pathfinding
                 askPathTimeRemaining -= Time.deltaTime;
                 if (askPathTimeRemaining <= 0)
                 {
-                    readyToRequest = true;                   
+                    readyToRequest = true;
+                    askPathTimeRemaining = ASK_PATH_INTERVAL;
                 }
             }
 
             if (currentAction != null)
                 FollowPath();
-            
+
             if (path != null)
                 path.DebugPath();
         }
 
+        
+
         private void FollowPath()
         {
-            if (!currentAction.Started)
-            {
-                currentAction.Start();
-            }
-           
-            if (!currentAction.Completed)
-            {
-                 currentAction.Update();
-            }
-            else if (currentAction.Completed)
-            {
-                if (!path.IsCompleted)
-                {
-                    currentAction = this.path.NextAction();
-                }
 
-                if (readyToRequest)
-                {
-                    PathRequest();
-                }
-             }
+            currentAction.Update(movement);
+
+            
+            if (currentAction.Completed)
+            {
+                ActionComplete();
+            }
+        }
+
+        private void ActionComplete()
+        {
+            if (!path.IsCompleted)
+            {
+                currentAction = path.NextAction();
+                currentAction.Start(movement);
+            }
+            else
+            {
+                movement.StopMovement();
+            }
+
+            if (readyToRequest)
+            {
+                PathRequest();
+            }
         }
     }
 
