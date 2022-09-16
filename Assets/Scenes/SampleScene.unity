@@ -831,7 +831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dba1a70be0022cc4b89bdd074b82a585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graph: {fileID: 2106936953}
+  graph: {fileID: 11400000, guid: 8f03c10ab8ecbd1469c747bcf8f10a30, type: 2}
 --- !u!4 &159036503
 Transform:
   m_ObjectHideFlags: 0
@@ -23045,6 +23045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c20b86eb36958f4f8148059c81776f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializedPathNodes: []
 --- !u!1 &2123909467
 GameObject:
   m_ObjectHideFlags: 0

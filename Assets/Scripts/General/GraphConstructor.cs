@@ -66,79 +66,52 @@ namespace Pathfinding
             DestroyImmediate(emptyGO);
         }
 
-        private List<PathNode> GeneratePathNodes()
+        private PathNode[] GeneratePathNodes()
         {
-            Dictionary<NodeGameobject, PathNode> nodeDictionary = new Dictionary<NodeGameobject, PathNode>();
-            List<PathNode> nodes = new List<PathNode>();
+            Dictionary<NodeGameobject, PathNode> nodeDictionary = new Dictionary<NodeGameobject, PathNode>();           
             NodeGameobject[] nodeGameobjects = GetComponentsInChildren<NodeGameobject>();
-            //Create PathfindNodes
+            PathNode[] nodes = new PathNode[nodeGameobjects.Length];
+
             for (int i = 0; i < nodeGameobjects.Length; i++)
             {
-                PathNode newNode = new PathNode();
-                newNode.Position = nodeGameobjects[i].transform.position;
-                nodeDictionary.Add(nodeGameobjects[i], newNode);
-            }
-
-            foreach(NodeGameobject nodeGameobject in nodeDictionary.Keys)
-            {
-                PathNode newNode = nodeDictionary[nodeGameobject];
-                newNode.Edges = new Edge[nodeGameobject.EdgesData.Count];
-                for(int i = 0; i < newNode.Edges.Length; i++)
+                Vector2 position = nodeGameobjects[i].transform.position;
+                Edge[] edges = new Edge[nodeGameobjects[i].EdgesData.Count];
+                for (int j = 0; j < edges.Length; j++)
                 {
-                    if (nodeGameobject.EdgesData[i].EdgeType == EdgeType.Jump)
+                    if (nodeGameobjects[i].EdgesData[j].EdgeType == EdgeType.Jump)
                     {
-                        Edge newEdge = new Edge();
-                        newEdge.BezierCurve= nodeGameobject.GetCurve(nodeGameobject.EdgesData[i]);
-                        newEdge.DestinationNodeHashCode= PositionToHash(nodeGameobject.EdgesData[i].NodeConnected.transform.position);
-                        newEdge.HasCurve = true;
-                        newEdge.Weight = 3;
-
-                        newNode.Edges[i] = newEdge;
+                        int destinationNodeHashCode = PositionToHash(nodeGameobjects[i].EdgesData[j].NodeConnected.transform.position);
+                        BezierCurve bezierCurve = nodeGameobjects[i].GetCurve(nodeGameobjects[i].EdgesData[j]);
+                        bool hasCurve = true;
+                        int weight = nodeGameobjects[i].EdgesData[j].Weight;
+                        Edge newEdge = new Edge(destinationNodeHashCode, bezierCurve, hasCurve, weight);
+                        edges[j] = newEdge;
                     }
                     else
                     {
-                        Edge newEdge = new Edge();
-                        newEdge.DestinationNodeHashCode = PositionToHash(nodeGameobject.EdgesData[i].NodeConnected.transform.position);
-                        newEdge.HasCurve = false;
-                        newEdge.Weight = 2;
-
-                        newNode.Edges[i] = newEdge;
+                        int destinationNodeHashCode = PositionToHash(nodeGameobjects[i].EdgesData[j].NodeConnected.transform.position);
+                        bool hasCurve = false;
+                        int weight = nodeGameobjects[i].EdgesData[j].Weight;
+                        Edge newEdge = new Edge(destinationNodeHashCode, hasCurve, weight);
+                        edges[j] = newEdge;
                     }
-
                 }
-                nodes.Add(newNode);
-            }
 
+                nodes[i] = new PathNode(position, edges);
+                
+            }
+     
             return nodes;
         }
         public void GenerateGraph()
         {
             Graph graph = ScriptableObject.CreateInstance<Graph>();
-            List<PathNode> pathNodes = GeneratePathNodes();
-            for(int i = 0; i < pathNodes.Count; i++)
-            {
-                PathNode pathNode = pathNodes[i];
-                pathNode.ID = pathNodes[i].GetHashCode();
-                graph.PathNodes.Add(pathNode.ID, pathNode);
-            }
-            
+            PathNode[] serializablePathnodes = GeneratePathNodes();
+            graph.SerializeGraph(serializablePathnodes);
             AssetDatabase.CreateAsset(graph, Path);
             AssetDatabase.SaveAssets();
         }
-
-        public Graph NewGraph()
-        {
-            Graph graph = ScriptableObject.CreateInstance<Graph>();
-            List<PathNode> pathNodes = GeneratePathNodes();
-            for (int i = 0; i < pathNodes.Count; i++)
-            {
-                PathNode pathNode = pathNodes[i];
-                pathNode.ID = pathNodes[i].GetHashCode();
-                graph.PathNodes.Add(pathNode.ID, pathNode);
-            }
-            return graph;
-        }
-
+      
         private int PositionToHash(Vector2 position)
         {
             string stringID = position.x.ToString() + position.y.ToString();

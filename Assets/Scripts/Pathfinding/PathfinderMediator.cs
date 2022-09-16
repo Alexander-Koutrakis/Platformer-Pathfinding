@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
-using System.Diagnostics;
-using System;
+
+
 namespace Pathfinding
 {
     public class PathfinderMediator:MonoBehaviour
@@ -12,20 +12,14 @@ namespace Pathfinding
         private void Awake()
         {
             if (Instance == null){
-                Instance = this;
-                //GraphConstructor graphConstructor = FindObjectOfType<GraphConstructor>();
-                //graph = graphConstructor.NewGraph();
+                Instance = this;                
             }
             else
             {
                 Destroy(gameObject);
             }
-        }
 
-        public void SetinstanceTest(Graph graph)
-        {
-            Instance = this;
-            this.graph = graph;
+            graph.Initialize();
         }
 
         public void PathResquest(Navigator navigator, Vector2 target)
@@ -34,7 +28,6 @@ namespace Pathfinding
             Task.Factory.StartNew(() => SendPath(navigator, target, navigatorPosition));
         }
   
-
         private void SendPath(Navigator navigator, Vector2 targetPosition,Vector2 navigatorPosition)
         {
             Path path = Pathfinder.GetPath(navigatorPosition, targetPosition, graph, navigator.Transform);
