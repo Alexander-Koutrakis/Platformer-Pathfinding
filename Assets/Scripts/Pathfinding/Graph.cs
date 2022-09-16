@@ -7,7 +7,7 @@ namespace Pathfinding
     public class Graph:ScriptableObject
     {
         public Dictionary<int, PathNode> PathNodes { private set; get; }
-        [SerializeField]private PathNode[] serializedPathNodes;
+        private PathNode[] serializedPathNodes;
         public PathNode NearestNode(Vector2 position)
         {
             float minDistance = float.MaxValue;

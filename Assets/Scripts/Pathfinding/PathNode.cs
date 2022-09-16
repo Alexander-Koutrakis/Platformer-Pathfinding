@@ -6,9 +6,9 @@ namespace Pathfinding
     [System.Serializable]
     public struct PathNode : IEquatable<PathNode>
     {
-        public Vector2 Position;
-        public Edge[] Edges;
-        public int ID;
+        public Vector2 Position { private set; get; }
+        public Edge[] Edges { private set; get; }
+        public int ID { private set; get; }
 
         public PathNode(Vector2 position,Edge[] edges)
         {
@@ -39,10 +39,10 @@ namespace Pathfinding
     [System.Serializable]
     public struct Edge
     {
-        public int DestinationNodeHashCode;
-        public BezierCurve BezierCurve;
-        public bool HasCurve;
-        public int Weight;
+        public int DestinationNodeHashCode { private set; get; }
+        public BezierCurve BezierCurve { private set; get; }
+        public bool HasCurve { private set; get; }
+        public int Weight { private set; get; }
 
         public Edge(int destinationNodeHashCode, BezierCurve bezierCurve, bool hasCurve,int weight)
         {

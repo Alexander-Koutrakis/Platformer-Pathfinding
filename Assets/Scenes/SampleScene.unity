@@ -23045,7 +23045,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c20b86eb36958f4f8148059c81776f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializedPathNodes: []
 --- !u!1 &2123909467
 GameObject:
   m_ObjectHideFlags: 0
