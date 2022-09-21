@@ -8,15 +8,23 @@ Instructions:
 3. Add Navigator script on each Actor.
 4. Add "Target" tag on your target GameObject.
 
+
 Execution:
 
+
 -Used A* Pathfinding algorithm to determine the shortest path.
+
 -Get all the edges from the path and convert them into MovementActions (Walk,Jump)
+
 -Navigator executes MovementActions one after the other until it reaches the destination.
+
   Path example: Walk(to target Node),Walk(to target Node),Jump(to target Node),Walk(to target Node).
   
 To Do:
 
+
 -Remove test scripts
+
 -Add more comments
+
 -Create an simpler UI for graph creation
